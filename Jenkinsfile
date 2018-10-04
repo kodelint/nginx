@@ -1,6 +1,5 @@
 pipeline {
   agent any
-
   stages {
     stage('Setup') {
       steps {
@@ -13,17 +12,19 @@ pipeline {
       }
     }
     stage('Acceptance Testing') {
-      steps {
-        parallel (
-          rubocop: {
+      parallel {
+        stage('rubocop') {
+          steps {
             sh 'echo "Starting chefstyle (rubocop): "'
             sh 'rubocop --color'
-          },
-          foodcritic: {
+          }
+        }
+        stage('foodcritic') {
+          steps {
             sh 'echo "Starting foodcritic: "'
             sh 'foodcritic .'
           }
-        )
+        }
       }
     }
     stage('Test Kitchen') {
@@ -34,10 +35,14 @@ pipeline {
   }
   post {
     success {
-      echo "Knife upload here"
+      echo 'Knife upload here'
+
     }
+
     failure {
-      echo "The build failed"
+      echo 'The build failed'
+
     }
+
   }
 }
