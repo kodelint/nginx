@@ -5,10 +5,10 @@ pipeline {
       steps {
         sh 'echo "Versions: "'
         sh 'chef --version'
-        sh 'rubocop --version'
-        sh 'foodcritic --version'
+        sh 'chef exec rubocop --version'
+        sh 'chef exec foodcritic --version'
         sh 'echo "Updating Berkshelf: "'
-        sh 'if [ ! -f Berksfile.lock ]; then berks install; else berks update; fi;'
+        sh 'if [ ! -f Berksfile.lock ]; then chef exec berks install; else chef exec berks update; fi;'
       }
     }
     stage('Acceptance Testing') {
@@ -16,20 +16,20 @@ pipeline {
         stage('rubocop') {
           steps {
             sh 'echo "Starting chefstyle (rubocop): "'
-            sh 'rubocop --color'
+            sh 'chef exec rubocop --color'
           }
         }
         stage('foodcritic') {
           steps {
             sh 'echo "Starting foodcritic: "'
-            sh 'foodcritic .'
+            sh 'chef exec foodcritic .'
           }
         }
       }
     }
     stage('Test Kitchen') {
       steps {
-        sh 'if [ ! -f Berksfile.lock ]; then berks install; else berks update; fi; kitchen test -d always --color'
+        sh 'if [ ! -f Berksfile.lock ]; then chef exec berks install; else chef exec berks update; fi; chef exec kitchen test -d always --color'
       }
     }
   }
