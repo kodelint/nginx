@@ -13,12 +13,6 @@ pipeline {
     }
     stage('Acceptance Testing') {
       parallel {
-        stage('rubocop') {
-          steps {
-            sh 'echo "Starting chefstyle (rubocop): "'
-            sh 'chef exec rubocop --color'
-          }
-        }
         stage('foodcritic') {
           steps {
             sh 'echo "Starting foodcritic: "'
